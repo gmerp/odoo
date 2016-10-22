@@ -60,6 +60,8 @@ ActionManager.include({
                 report_url += "&context=" + encodeURIComponent(JSON.stringify(action.context));
             }
 
+            report_url += "&report_id=" + action.id;
+
             var response = new Array();
             response[0] = report_url;
             response[1] = action.report_type;
