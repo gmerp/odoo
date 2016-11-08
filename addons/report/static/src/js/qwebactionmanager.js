@@ -52,6 +52,7 @@ var make_report_url = function (action) {
     if (_.isUndefined(action.data) || _.isNull(action.data) || (_.isObject(action.data) && _.isEmpty(action.data))) {
         if (action.context.active_ids) {
             var active_ids_path = '/' + action.context.active_ids.join(',');
+            active_ids_path += "?report_id=" + action.id;
             // Update the report's type - report's url mapping.
             report_urls = _.mapObject(report_urls, function (value, key) {
                 return value += active_ids_path;
@@ -60,6 +61,7 @@ var make_report_url = function (action) {
     } else {
         var serialized_options_path = '?options=' + encodeURIComponent(JSON.stringify(action.data));
         serialized_options_path += '&context=' + encodeURIComponent(JSON.stringify(action.context));
+        serialized_options_path += "&report_id=" + action.id;
         // Update the report's type - report's url mapping.
         report_urls = _.mapObject(report_urls, function (value, key) {
             return value += serialized_options_path;
@@ -84,6 +86,7 @@ ActionManager.include({
                 context: action.context,
                 name: action.name,
                 display_name: action.display_name,
+                target: 'new',
             });
             return this.do_action('report.client_action', client_action_options);
         } else if (action.report_type === 'qweb-pdf') {
@@ -113,6 +116,7 @@ ActionManager.include({
                         context: action.context,
                         name: action.name,
                         display_name: action.display_name,
+                        target: 'new',
                     });
                     framework.unblockUI();
                     return self.do_action('report.client_action', client_action_options);
