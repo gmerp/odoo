@@ -626,7 +626,7 @@ class StockMove(models.Model):
             if move.state != 'assigned' and not self.env.context.get('reserve_only_ops'):
                 qty_already_assigned = move.reserved_availability
                 qty = move.product_qty - qty_already_assigned
-                
+
                 quants = Quant.quants_get_preferred_domain(qty, move, domain=main_domain[move.id], preferred_domain_list=[])
                 Quant.quants_reserve(quants, move)
 
@@ -787,8 +787,12 @@ class StockMove(models.Model):
             entire_pack = not operation.product_id and True or False
 
             # compute quantities for each lot + check quantities match
-            lot_quantities = dict((pack_lot.lot_id.id, operation.product_uom_id._compute_quantity(pack_lot.qty, operation.product_id.uom_id)
-            ) for pack_lot in operation.pack_lot_ids)
+            if operation.product_id:
+                lot_quantities = dict((pack_lot.lot_id.id, operation.product_uom_id._compute_quantity(pack_lot.qty, operation.product_id.uom_id)
+                ) for pack_lot in operation.pack_lot_ids)
+            else:
+                lot_quantities = dict((pack_lot.lot_id.id, operation.product_uom_id._compute_quantity(pack_lot.qty, pack_lot.lot_id.product_id.uom_id)
+                ) for pack_lot in operation.pack_lot_ids)
             if operation.pack_lot_ids and float_compare(sum(lot_quantities.values()), operation.product_qty, precision_rounding=operation.product_uom_id.rounding) != 0.0:
                 raise UserError(_('You have a difference between the quantity on the operation and the quantities specified for the lots. '))
 
@@ -934,7 +938,7 @@ class StockMove(models.Model):
         # TDE CLEANME: used only in write in this file, to clean
         # ctx['do_not_propagate'] = True
         self.with_context(do_not_propagate=True).write({'product_uom_qty': self.product_uom_qty - uom_qty})
-        
+
         if self.move_dest_id and self.propagate and self.move_dest_id.state not in ('done', 'cancel'):
             new_move_prop = self.move_dest_id.split(qty)
             new_move.write({'move_dest_id': new_move_prop})
