@@ -714,10 +714,10 @@
                                             </a>
                                         </div>
                                         <div>
-                                            <a name="%(hr_equipment_todo_request_action_from_dashboard)d" type="action" context="{'search_default_todo': 1}">
+
+                                        </div><a name="%(hr_equipment_todo_request_action_from_dashboard)d" type="action" context="{'search_default_todo': 1}">
                                                 To Do
                                             </a>
-                                        </div>
                                         <div>
                                             <a name="%(hr_equipment_todo_request_action_from_dashboard)d" type="action" context="{'search_default_progress': 1}">
                                                 In Progress
