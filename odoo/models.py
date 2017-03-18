@@ -3281,18 +3281,18 @@ class BaseModel(object):
         if self._uid == SUPERUSER_ID:
             return
 
-        if self.is_transient():
-            # Only one single implicit access rule for transient models: owner only!
-            # This is ok to hardcode because we assert that TransientModels always
-            # have log_access enabled so that the create_uid column is always there.
-            # And even with _inherits, these fields are always present in the local
-            # table too, so no need for JOINs.
-            query = "SELECT DISTINCT create_uid FROM %s WHERE id IN %%s" % self._table
-            self._cr.execute(query, (tuple(self.ids),))
-            uids = [x[0] for x in self._cr.fetchall()]
-            if len(uids) != 1 or uids[0] != self._uid:
-                raise AccessError(_('For this kind of document, you may only access records you created yourself.\n\n(Document type: %s)') % (self._description,))
-        else:
+        if not self.is_transient():
+        #     # Only one single implicit access rule for transient models: owner only!
+        #     # This is ok to hardcode because we assert that TransientModels always
+        #     # have log_access enabled so that the create_uid column is always there.
+        #     # And even with _inherits, these fields are always present in the local
+        #     # table too, so no need for JOINs.
+        #     query = "SELECT DISTINCT create_uid FROM %s WHERE id IN %%s" % self._table
+        #     self._cr.execute(query, (tuple(self.ids),))
+        #     uids = [x[0] for x in self._cr.fetchall()]
+        #     if len(uids) != 1 or uids[0] != self._uid:
+        #         raise AccessError(_('For this kind of document, you may only access records you created yourself.\n\n(Document type: %s)') % (self._description,))
+        # else:
             where_clause, where_params, tables = self.env['ir.rule'].domain_get(self._name, operation)
             if where_clause:
                 query = "SELECT %s.id FROM %s WHERE %s.id IN %%s AND " % (self._table, ",".join(tables), self._table)
