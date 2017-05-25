@@ -3750,7 +3750,7 @@ class BaseModel(object):
         if self.env.recompute and self._context.get('recompute', True):
             self.recompute()
 
-        self.step_workflow()
+        # self.step_workflow()  # michael
         return True
 
     #
