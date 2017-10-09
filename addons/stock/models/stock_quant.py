@@ -213,17 +213,17 @@ class Quant(models.Model):
         # one step is forced (creates a quant of qty = -1.0), it is not possible afterwards to
         # correct the inventory unless the product leaves the stock.
         picking_type = move.picking_id and move.picking_id.picking_type_id or False
-        if check_lot and lot_id and move.product_id.tracking == 'serial' and (not picking_type or (picking_type.use_create_lots or picking_type.use_existing_lots)):
-            other_quants = self.search([('product_id', '=', move.product_id.id), ('lot_id', '=', lot_id),
-                                        ('qty', '>', 0.0), ('location_id.usage', '=', 'internal')])
-            if other_quants:
-                # We raise an error if:
-                # - the total quantity is strictly larger than 1.0
-                # - there are more than one negative quant, to avoid situations where the user would
-                #   force the quantity at several steps of the process
-                if sum(other_quants.mapped('qty')) > 1.0 or len([q for q in other_quants.mapped('qty') if q < 0]) > 1:
-                    lot_name = self.env['stock.production.lot'].browse(lot_id).name
-                    raise UserError(_('The serial number %s is already in stock.') % lot_name + _("Otherwise make sure the right stock/owner is set."))
+        # if check_lot and lot_id and move.product_id.tracking == 'serial' and (not picking_type or (picking_type.use_create_lots or picking_type.use_existing_lots)):
+        #     other_quants = self.search([('product_id', '=', move.product_id.id), ('lot_id', '=', lot_id),
+        #                                 ('qty', '>', 0.0), ('location_id.usage', '=', 'internal')])
+        #     if other_quants:
+        #         # We raise an error if:
+        #         # - the total quantity is strictly larger than 1.0
+        #         # - there are more than one negative quant, to avoid situations where the user would
+        #         #   force the quantity at several steps of the process
+        #         if sum(other_quants.mapped('qty')) > 1.0 or len([q for q in other_quants.mapped('qty') if q < 0]) > 1:
+        #             lot_name = self.env['stock.production.lot'].browse(lot_id).name
+        #             raise UserError(_('The serial number %s is already in stock.') % lot_name + _("Otherwise make sure the right stock/owner is set."))
 
     @api.model
     def _quant_create_from_move(self, qty, move, lot_id=False, owner_id=False,
@@ -259,9 +259,9 @@ class Quant(models.Model):
             vals.update({'propagated_from_id': negative_quant_id.id})
 
         picking_type = move.picking_id and move.picking_id.picking_type_id or False
-        if lot_id and move.product_id.tracking == 'serial' and (not picking_type or (picking_type.use_create_lots or picking_type.use_existing_lots)):
-            if qty != 1.0:
-                raise UserError(_('You should only receive by the piece with the same serial number'))
+        # if lot_id and move.product_id.tracking == 'serial' and (not picking_type or (picking_type.use_create_lots or picking_type.use_existing_lots)):
+        #     if qty != 1.0:
+        #         raise UserError(_('You should only receive by the piece with the same serial number'))
 
         # create the quant as superuser, because we want to restrict the creation of quant manually: we should always use this method to create quants
         return self.sudo().create(vals)
