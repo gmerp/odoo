@@ -1756,9 +1756,9 @@ msgstr "运行JS 测试"
 
 #. module: web
 #. openerp-web
-#: code:addons/web/static/src/js/views/form_common.js:874
-#: code:addons/web/static/src/xml/base.xml:344
-#: code:addons/web/static/src/xml/base.xml:421
+#: code:addons/web/static/src/js/views/form_common.js:875
+#: code:addons/web/static/src/xml/base.xml:345
+#: code:addons/web/static/src/xml/base.xml:422
 #: code:addons/web/static/src/xml/base.xml:1076
 #, python-format
 msgid "Save"
@@ -1766,7 +1766,7 @@ msgstr "保存"
 
 #. module: web
 #. openerp-web
-#: code:addons/web/static/src/js/views/form_common.js:889
+#: code:addons/web/static/src/js/views/form_common.js:890
 #, python-format
 msgid "Save & New"
 msgstr "保存并新建"
