@@ -458,7 +458,7 @@ class Quant(models.Model):
             if pack_operation.owner_id:
                 domain += [('owner_id', '=', pack_operation.owner_id.id)]
             if pack_operation.package_id and not pack_operation.product_id:
-                domain += [('package_id', 'child_of', pack_operation.package_id.id)]
+                domain += [('package_id', '=', pack_operation.package_id.id)]
             elif pack_operation.package_id and pack_operation.product_id:
                 domain += [('package_id', '=', pack_operation.package_id.id)]
             else:
@@ -616,7 +616,7 @@ class QuantPackage(models.Model):
     @api.depends('parent_id', 'children_ids', 'quant_ids.package_id')
     def _compute_children_quant_ids(self):
         res = dict.fromkeys(self.ids, self.env['stock.quant'])
-        children_quants = self.env['stock.quant'].search(['package_id', 'child_of', self.ids])
+        children_quants = self.env['stock.quant'].search(['package_id', '=', self.ids])
         for quant in children_quants:
             res[quant.package_id.id] |= quant
         for package in self:
@@ -681,7 +681,7 @@ class QuantPackage(models.Model):
     get_content_package = view_content_package
 
     def _get_contained_quants(self):
-        return self.env['stock.quant'].search([('package_id', 'child_of', self.ids)])
+        return self.env['stock.quant'].search([('package_id', '=', self.ids)])
     get_content = _get_contained_quants
 
     def _get_all_products_quantities(self):
